@@ -43,7 +43,7 @@ function Dropdown({
 
   useEffect(() => {
     show ? onOpen?.() : onClose?.()
-  }, [show])
+  }, [show, onOpen, onClose])
 
   return (
     <div ref={dropdownRef}>
