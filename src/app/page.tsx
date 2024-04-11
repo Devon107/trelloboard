@@ -1,7 +1,6 @@
 'use client'
 import { useState } from "react"
 import { Plus } from "react-feather"
-import { DragDropContext, DropResult } from "@hello-pangea/dnd"
 import Board from "../components/Board"
 import Button from "../components/Button"
 import Header from "../components/Header"
@@ -10,8 +9,8 @@ import TaskList from "../components/TaskList"
 import { TrelloListForm } from "../components/TrelloForm"
 import Footer from "../components/Footer"
 import useTrelloStore from "../utils/store"
-import { AnimatePresence } from "framer-motion"
 import { useEffect } from "react"
+import DropIndicator from "@/components/DropIndicator"
 
 function Page() {
   const [showAddListForm, setShowAddListForm] = useState(false)
@@ -27,32 +26,17 @@ function Page() {
     darkModeStore ? document.documentElement.classList.add("dark") : document.documentElement.classList.remove("dark")
   },[darkModeStore])
 
-  const handleTaskDrag = ({ destination, source }: DropResult): void => {
-    if (!destination) return
-    if (
-      destination.index === source.index &&
-      destination.droppableId === source.droppableId
-    )
-      return
-
-    shiftTask(
-      source.droppableId,
-      destination.droppableId,
-      source.index,
-      destination.index
-    )
-  }
-
   return (
       <div
       className={`App flex flex-col min-h-screen bg-slate-500 dark:bg-slate-950`}>
         <Header title="Trello Board"/>
-        <DragDropContext onDragEnd={handleTaskDrag}>
           <Board>
               {lists.map((list) => (
                 <TaskList
                   key={list.id}
                   list={list}
+                  allTasks={tasks}
+                  tasks={tasks[list.id]}
                   numTasks={tasks[list.id].length}
                 >
                   {tasks[list.id].map((task, idx) => (
@@ -64,6 +48,7 @@ function Page() {
                       className="mb-1.5"
                     />
                   ))}
+                  <DropIndicator beforeId={null} column={list.id} />
                 </TaskList>
               ))}
             {showAddListForm ? (
@@ -79,7 +64,6 @@ function Page() {
               </Button>
             )}
           </Board>
-        </DragDropContext>
         <Footer />
       </div>
   )

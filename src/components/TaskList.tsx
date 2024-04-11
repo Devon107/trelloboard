@@ -6,24 +6,28 @@ import Dropdown, { DropdownItem } from "./Dropdown"
 import TrelloForm, { TrelloInput, TrelloTaskForm } from "./TrelloForm"
 import Modal from "./Modal"
 import clsx from "clsx"
-import useTrelloStore, { ListItem } from "../utils/store"
+import useTrelloStore, { ListItem, TaskItem } from "../utils/store"
 import { motion } from "framer-motion"
 
 interface IProps {
   list: ListItem
   children: ReactNode
+  tasks: TaskItem[]
+  allTasks: {[id: ListItem["id"]]: TaskItem[]}
   numTasks: number
 }
 
-function TaskList({ list, children, numTasks }: IProps) {
+function TaskList({ list, children, tasks, allTasks, numTasks }: IProps) {
   const [showModal, setShowModal] = useState(false)
   const [showAddTaskForm, setShowAddTaskForm] = useState(false)
   const [edit, setEdit] = useState(false)
   const [editName, setEditName] = useState(list.name)
+  const [active, setActive] = useState(false)
 
   const addTask = useTrelloStore((state) => state.addTask)
   const editList = useTrelloStore((state) => state.editList)
   const deleteList = useTrelloStore((state) => state.deleteList)
+  const shiftTask = useTrelloStore((state) => state.shiftTask)
   const currentProject = useTrelloStore((state) => state.currentProject)
 
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,6 +41,85 @@ function TaskList({ list, children, numTasks }: IProps) {
   }
 
   const titleClassName = "font-bold text-gray-700 dark:text-gray-200"
+
+  const handleDragEnd = (event: any) => {
+    const cardId = event.dataTransfer.getData("cardId");
+    setActive(false);
+    clearHighlights();
+    const indicators = getIndicators();
+    const { element } = getNearestIndicator(event, indicators);
+    const before = element.dataset.before || "-1";
+    let fromColumn = '';
+    Object.keys(allTasks).forEach((key) => {
+      if(allTasks[key].find((el) => el.id === cardId)) fromColumn = key
+    })
+    if (before !== cardId) {
+      let copy = [...allTasks[fromColumn]];
+      let taskToTransfer = copy.find((c) => c.id === cardId);
+      if (!taskToTransfer) return;
+      copy = [...tasks]
+      copy = copy.filter((c) => c.id !== cardId);
+      const moveToBack = before === "-1";
+      if (moveToBack) {
+          copy.push(taskToTransfer);
+      } else {
+          const insertAtIndex = copy.findIndex((el) => el.id === before);
+          if (insertAtIndex === undefined) return;
+          copy.splice(insertAtIndex, 0, taskToTransfer);
+      }
+      shiftTask(
+        fromColumn,
+        list.id,
+        allTasks[fromColumn].findIndex((el) => el.id === cardId),
+        copy.findIndex((el) => el.id === cardId)
+      )
+    }
+}
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      highlightIndicator(e);
+      setActive(true);
+  };
+
+  const handleDragLeave = () => {
+    clearHighlights();
+    setActive(false);
+  };
+
+  const clearHighlights = () => {
+    const indicators = getIndicators();
+    indicators.forEach((i: HTMLElement) => {
+        i.style.opacity = "0";
+    });
+  };
+  const highlightIndicator = (e: any) => {
+  const indicators = getIndicators();
+  clearHighlights();
+  const el = getNearestIndicator(e, indicators);
+  el.element.style.opacity = "1";
+  };
+  const getNearestIndicator = (e: any, indicators: any) => {
+    const DISTANCE_OFFSET = 50;
+    const el = indicators.reduce(
+        (closest: any, child: any) => {
+        const box = child.getBoundingClientRect();
+        const offset = e.clientY - (box.top + DISTANCE_OFFSET);
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+        },
+        {
+        offset: Number.NEGATIVE_INFINITY,
+        element: indicators[indicators.length - 1],
+        }
+    );
+    return el;
+  };
+  const getIndicators = () => {
+    return Array.from(document.querySelectorAll(`[data-column="${list.id}"]`) as NodeListOf<HTMLElement>);
+  };
 
   return (
     <motion.div
@@ -108,15 +191,16 @@ function TaskList({ list, children, numTasks }: IProps) {
         )}
       </section>
 
-      <Droppable droppableId={list.id.toString()} key={list.id}>
-        {(provided) => (
-          <ul
+          <div
+            onDrop={handleDragEnd}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
             className={clsx(
               "max-h-[75vh] px-1 pb-1 mx-1",
               "scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent scrollbar-thumb-rounded-full",
-              "dark:scrollbar-thumb-gray-600"
+              "dark:scrollbar-thumb-gray-600",
+              active ? "bg-neutral-800/50" : "bg-neutral-800/0"
             )}
-            ref={provided.innerRef}
           >
             {children}
             {showAddTaskForm && (
@@ -130,10 +214,7 @@ function TaskList({ list, children, numTasks }: IProps) {
                 className="mb-2"
               />
             )}
-            {provided.placeholder}
-          </ul>
-        )}
-      </Droppable>
+          </div>
 
       {!showAddTaskForm && (
         <Button
