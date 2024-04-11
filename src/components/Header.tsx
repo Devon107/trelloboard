@@ -64,7 +64,7 @@ function Header({ title }: IProps) {
             Toogle {darkMode ? "light" : "dark"} mode
           </span>
         </DropdownItem>
-        <DropdownItem>
+        <DropdownItem onClick={(e) => e.stopPropagation()}>
           <label className="flex-1 flex items-center cursor-pointer">
             <Upload size={20} />
             <span className="ml-2">Import as JSON</span>
