@@ -70,7 +70,7 @@ export function TrelloTextArea({ className, ...props }: ITextAreaProps) {
     <div className="w-full" style={{ minHeight: parentHeight }}>
       <textarea
         {...props}
-        className="w-full bg-transparent rezise-none rounded p-2 focus:outline-none focus:ring-1 focus:ring-white"
+        className={className}
         ref={textAreaRef}
         style={{ height: textAreaHeight }}
         onChange={onChangeHandler}
@@ -160,6 +160,7 @@ export function TrelloTaskForm({
       )}
     >
       <TrelloTextArea
+        className="focus:outline-none bg-transparent resize-none"
         defaultValue={inputValue}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={onEnterPress}
