@@ -24,6 +24,7 @@ function Footer({}) {
         className="flex items-center"
       >
         <GitHub className="w-5 h-5" />
+        <span className="ml-2 hidden">Github</span>
       </a>
       <AnimatePresence>
         {showInfo && (

@@ -6,7 +6,7 @@ interface IProps {
 
 function Board({ children }: IProps) {
   return (
-    <main
+    <div
       className={clsx(
         "flex items-start gap-3 flex-1",
         "overflow-x-auto mt-4 mb-1 px-4",
@@ -15,7 +15,7 @@ function Board({ children }: IProps) {
       )}
     >
       {children}
-    </main>
+    </div>
   );
 }
 

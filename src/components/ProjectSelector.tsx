@@ -96,6 +96,7 @@ function ProjectSelector({ className }: IProps) {
                 }}
               >
                 <Trash2 size={16} />
+                <span className="sr-only hidden">Delete</span>
               </Button>
             </DropdownItem>
           ))

@@ -22,7 +22,7 @@ function Button({
         "whitespace-nowrap",
         "focus:outline-none",
         secondary
-          ? "!text-gray-500"
+          ? "!text-gray-400"
           : [
               "bg-gray-300/40 text-white dark:bg-gray-700/40",
               "backdrop-filter backdrop-blur",

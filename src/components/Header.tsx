@@ -55,6 +55,7 @@ function Header({ title }: IProps) {
             onClick={handleClick}
           >
             <Menu />
+            <span className="ml-2 hidden">Menu</span>
           </Button>
         )}
       >

@@ -222,7 +222,7 @@ function TaskList({ list, children, tasks, allTasks, numTasks }: IProps) {
           onClick={() => setShowAddTaskForm(true)}
         >
           <Plus className="mr-1 w-5 h-5" />
-          <span>Add {numTasks !== 0 ? "another" : "a"} card</span>
+          <span>Add {numTasks !== 0 ? "another" : "a"} task</span>
         </Button>
       )}
     </motion.div>

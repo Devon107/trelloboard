@@ -36,8 +36,6 @@ function Task({ task, listId, idx, className }: ITaskProps) {
     setShowInfo(false)
   }
 
-  const titleClassName = "text-gray-700 dark:text-gray-200"
-
   return (
     <>
       <DropIndicator beforeId={task.id} column={listId}/>
@@ -58,6 +56,7 @@ function Task({ task, listId, idx, className }: ITaskProps) {
               floating
             >
               <X className="w-5 h-5" />
+            <span className="ml-2 hidden">Delete</span>
             </Button>
       </motion.div>
         {showInfo && (
@@ -73,7 +72,7 @@ function Task({ task, listId, idx, className }: ITaskProps) {
                 >
                   <p className="font-bold text-gray-800 dark:text-gray-200">Content</p>
                   <TrelloTextArea
-                    className={titleClassName}
+                    className="text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-white w-full bg-transparent rezise-none rounded p-2"
                     value={editContent}
                     onChange={(e) => seteditContent(e.target.value)}
                     autoFocus

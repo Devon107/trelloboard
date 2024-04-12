@@ -27,45 +27,45 @@ function Page() {
   },[darkModeStore])
 
   return (
-      <div
-      className={`App flex flex-col min-h-screen bg-slate-500 dark:bg-slate-950`}>
+      <main className={`App flex flex-col min-h-screen bg-slate-500 dark:bg-slate-950`}>
         <Header title="Trello Board"/>
-          <Board>
-              {lists.map((list) => (
-                <TaskList
-                  key={list.id}
-                  list={list}
-                  allTasks={tasks}
-                  tasks={tasks[list.id]}
-                  numTasks={tasks[list.id].length}
-                >
-                  {tasks[list.id].map((task, idx) => (
-                    <Task
-                      key={task.id}
-                      task={task}
-                      listId={list.id}
-                      idx={idx}
-                      className="mb-1.5"
-                    />
-                  ))}
-                  <DropIndicator beforeId={null} column={list.id} />
-                </TaskList>
-              ))}
-            {showAddListForm ? (
-              <TrelloListForm
-                onSubmit={() => setShowAddListForm(false)}
-                onCancel={() => setShowAddListForm(false)}
-                inputValue=""
-              />
-            ) : (
-              <Button onClick={() => setShowAddListForm(true)}>
-                <Plus className="mr-1" />
-                <span>Add {lists.length ? "another" : "a"} list</span>
-              </Button>
-            )}
-          </Board>
+        <h2 className="hidden">Subtitle</h2>
+        <Board>
+            {lists.map((list) => (
+              <TaskList
+                key={list.id}
+                list={list}
+                allTasks={tasks}
+                tasks={tasks[list.id]}
+                numTasks={tasks[list.id].length}
+              >
+                {tasks[list.id].map((task, idx) => (
+                  <Task
+                    key={task.id}
+                    task={task}
+                    listId={list.id}
+                    idx={idx}
+                    className="mb-1.5"
+                  />
+                ))}
+                <DropIndicator beforeId={null} column={list.id} />
+              </TaskList>
+            ))}
+          {showAddListForm ? (
+            <TrelloListForm
+              onSubmit={() => setShowAddListForm(false)}
+              onCancel={() => setShowAddListForm(false)}
+              inputValue=""
+            />
+          ) : (
+            <Button onClick={() => setShowAddListForm(true)}>
+              <Plus className="mr-1" />
+              <span>Add {lists.length ? "another" : "a"} list</span>
+            </Button>
+          )}
+        </Board>
         <Footer />
-      </div>
+      </main>
   )
 }
 export default Page
