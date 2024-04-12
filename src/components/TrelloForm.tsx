@@ -61,14 +61,20 @@ export function TrelloTextArea({ className, ...props }: ITextAreaProps) {
     if (props.onChange) props.onChange(e)
   }
 
+  const handleonFocus = (e: any) => {
+    const length=e.currentTarget.value.length;
+    e.currentTarget.setSelectionRange(length,length);
+  }
+
   return (
     <div className="w-full" style={{ minHeight: parentHeight }}>
       <textarea
         {...props}
-        className="w-full bg-transparent resize-none focus:outline-none"
+        className="w-full bg-transparent rezise-none rounded p-2 focus:outline-none focus:ring-1 focus:ring-white"
         ref={textAreaRef}
         style={{ height: textAreaHeight }}
         onChange={onChangeHandler}
+        onFocus={handleonFocus}
       />
     </div>
   )
