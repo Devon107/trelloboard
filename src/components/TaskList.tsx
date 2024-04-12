@@ -1,6 +1,5 @@
 import React, { ReactNode, useState } from "react"
 import { Check, Edit2, MoreHorizontal, Plus, Trash, X } from "react-feather"
-import { Droppable } from "@hello-pangea/dnd"
 import Button from "./Button"
 import Dropdown, { DropdownItem } from "./Dropdown"
 import TrelloForm, { TrelloInput, TrelloTaskForm } from "./TrelloForm"
