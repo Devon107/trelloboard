@@ -72,7 +72,7 @@ function Task({ task, listId, idx, className }: ITaskProps) {
                 >
                   <p className="font-bold text-gray-800 dark:text-gray-200">Content</p>
                   <TrelloTextArea
-                    className="text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-white w-full bg-transparent rezise-none rounded p-2"
+                    className="text-gray-700 bg-gray-200/50 dark:text-gray-200 focus:outline-none w-full dark:bg-slate-700 rezise-none rounded p-2"
                     value={editContent}
                     onChange={(e) => seteditContent(e.target.value)}
                     autoFocus
