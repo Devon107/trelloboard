@@ -11,6 +11,7 @@ export type ListItem = {
 
 export type TaskItem = {
   id: string;
+  title: string;
   content: string;
 };
 
@@ -43,8 +44,9 @@ interface TrelloMutations {
   deleteList: (projectId: string, id: string) => void;
   editList: (projectId: string, id: string, changes: Partial<ListItem>) => void;
 
-  addTask: (listId: string, content: string) => void;
+  addTask: (listId: string,title: string) => void;
   deleteTask: (listId: string, taskId: string) => void;
+  editTask: (listId: string, taskId: string, changes: Partial<TaskItem>) => void;
   shiftTask: (
     fromListId: string,
     toListId: string,
@@ -129,10 +131,10 @@ const useTrelloStore = create<TrelloState & TrelloMutations>()(
             })
           ),
 
-        addTask: (listId: string, content: string) =>
+        addTask: (listId: string, title: string) =>
           set(
             produce(({ tasks }: TrelloState) => {
-              tasks[listId].push({ id: nanoid(), content });
+              tasks[listId].push({ id: nanoid(), title, content: "" });
             })
           ),
 
@@ -141,6 +143,15 @@ const useTrelloStore = create<TrelloState & TrelloMutations>()(
             produce(({ tasks }: TrelloState) => {
               tasks[listId] = tasks[listId].filter(
                 (task) => task.id !== taskId
+              );
+            })
+          ),
+
+        editTask: (listId: string, taskId: string, changes: Partial<TaskItem>) =>
+          set(
+            produce(({ tasks }: TrelloState) => {
+              tasks[listId] = tasks[listId].map((task) =>
+                task.id === taskId ? { ...task, ...changes } : task
               );
             })
           ),
